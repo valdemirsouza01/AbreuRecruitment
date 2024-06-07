@@ -5,5 +5,9 @@
   text-align: center;
   min-height: 88vh;
   background-color:white;
-  padding: 15px
+  padding: 15px;
+  border-radius: 10px;
+  justify-content: center;
 }
+
+

@@ -46,5 +46,30 @@ namespace VAArtGalleryWebAPI.Infrastructure
             });
 
         }
+
+        public async Task<ArtGallery> UpdateAsync(ArtGallery artGallery, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var galleries = await GetAllArtGalleriesAsync(cancellationToken);
+
+            var index = galleries.FindIndex(g => g.Id == artGallery.Id);
+            if (index == -1)
+            {
+                throw new ArgumentException("Art gallery not found");
+            }
+
+            var artWorks = galleries[index].ArtWorksOnDisplay;
+            galleries[index] = artGallery;
+            galleries[index].ArtWorksOnDisplay = artWorks;
+
+            return await Task.Run(() =>
+            {
+                using TextWriter tw = new StreamWriter(_filePath, false);
+                tw.Write(JsonSerializer.Serialize(galleries));
+
+                return artGallery;
+            });
+        }
     }
 }

@@ -1,0 +1,87 @@
+<div>
+  <h2 mat-dialog-title style="text-align: center">Adicionar Galeria</h2>
+  <mat-dialog-content>
+    <form class="example-form" [formGroup]="formGallery">
+      <div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Nome</mat-label>
+          <input
+            type="name"
+            matInput
+            formControlName="name"
+            placeholder="Nome"
+          />
+          @if (formGallery.hasError('name') &&
+          !formGallery.hasError('required')) {
+          <mat-error>Digite seu nome</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Cidade</mat-label>
+          <input
+            type="city"
+            matInput
+            formControlName="city"
+            placeholder="Cidade"
+          />
+          @if (formGallery.hasError('city') &&
+          !formGallery.hasError('required')) {
+          <mat-error>Digite a cidade da obra</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="example-full-width">
+          <mat-label>Responsável</mat-label>
+          <input
+            type="manager"
+            matInput
+            formControlName="manager"
+            placeholder="Responsável"
+          />
+          @if (formGallery.hasError('manager') &&
+          !formGallery.hasError('required')) {
+          <mat-error>Digite eu nome do responsável</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      @if (formGallery.hasError('required')) {
+      <mat-error
+        >Favor, preencha todos os campos <strong>requeridos</strong></mat-error
+      >
+      }
+    </form>
+  </mat-dialog-content>
+  <div></div>
+</div>
+
+<button
+  [hidden]="formGallery.value.id !== ''"
+  style="margin: 0 25px"
+  mat-raised-button
+  color="primary"
+  left
+  (click)="addGallery()"
+  [disabled]="formGallery.invalid"
+>
+  Adicionar
+</button>
+
+<button 
+  [hidden]="formGallery.value.id == ''"
+  style="margin: 0 25px"
+  mat-raised-button
+  color="primary"
+  left
+  (click)="updateGallery()"
+  [disabled]="formGallery.invalid"
+>
+  Atualizar
+</button>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" mat-dialog-close>Close</button>
+</mat-dialog-actions>

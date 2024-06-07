@@ -1,8 +1,8 @@
 ﻿namespace VAArtGalleryWebAPI.Domain.Entities
 {
-    public class ArtGallery(string name, string city, string manager)
+    public class ArtGallery(string name, string city, string manager, Guid id = default)
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = id == Guid.Empty ? Guid.NewGuid() : id;
 
         public string Name { get; set; } = string.IsNullOrEmpty(name) ? throw new ArgumentException("Invalid name", nameof(name)) : name;
 

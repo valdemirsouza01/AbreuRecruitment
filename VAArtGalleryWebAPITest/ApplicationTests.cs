@@ -1,7 +1,10 @@
 using VAArtGalleryWebAPI.Application.Queries;
-using Moq;
 using VAArtGalleryWebAPI.Domain.Entities;
 using VAArtGalleryWebAPI.Domain.Interfaces;
+using VAArtGalleryWebAPI.Application.Commands;
+using VAArtGalleryWebAPI.WebApi.Models;
+using Moq;
+
 
 namespace VAArGalleryWebAPITest
 {
@@ -26,7 +29,7 @@ namespace VAArGalleryWebAPITest
         public async Task Test_Returns_the_galleries_successfully()
         {
             var r = await new GetAllArtGalleriesQueryHandler(NormalArtGalleryRepositoryMock().Object).Handle(new GetAllArtGalleriesQuery(), CancellationToken.None);
-            
+
             Assert.That(r, Is.Not.Null);
             Assert.That(r.Count, Is.EqualTo(2));
             Assert.That(r.First().Manager, Is.EqualTo("Baltazar Braz"));
@@ -50,6 +53,78 @@ namespace VAArGalleryWebAPITest
             Assert.That(r.First(), Is.EqualTo(a1));
         }
 
+        [Test]
+        public async Task Test_Creates_a_new_art_gallery()
+        {
+            //Arrange para CreateArtGalleryCommand
+            var artGallery = new CreateArtGalleryCommand(new CreateArtGalleryRequest("Gallery Three", "Coimbra", "Cristina Cunha"));
+
+            var r = await new CreateArtGalleryCommandHandler(CreateArtGalleryRepositoryMock().Object).Handle(artGallery, CancellationToken.None);
+
+            Assert.That(r, Is.Not.Null);
+            Assert.That(r.Name, Is.EqualTo("Gallery Three"));
+            Assert.That(r.City, Is.EqualTo("Coimbra"));
+            Assert.That(r.Manager, Is.EqualTo("Cristina Cunha"));
+        }
+
+        [Test]
+        public async Task Test_Creates_a_new_art_work()
+        {
+            //Arrange para CreateArtWorkRequest
+            var artWork = new CreateArtWorkCommand(Guid.NewGuid(), new CreateArtWorkRequest("obra 6", "artista 5", 1950, 20000));
+
+            var r = await new CreateArtWorkCommandHandler(CreateArtWorkRepositoryMock().Object).Handle(artWork, CancellationToken.None);
+
+            Assert.That(r, Is.Not.Null);
+            Assert.That(r.Name, Is.EqualTo("obra 6"));
+            Assert.That(r.Author, Is.EqualTo("artista 5"));
+            Assert.That(r.CreationYear, Is.EqualTo(1950));
+            Assert.That(r.AskPrice, Is.EqualTo(20000));
+        }
+                
+        [TestCase("Gallery Three", "Coimbra", "Cristina Cunha")]
+        [TestCase("Gallery Four", "Covilhã", "Catarina Costa")]
+        [TestCase("Gallery Five", "Caldas da Rainha", "Cristiano Carvalho")]
+        public async Task Test_Updates_an_existing_art_gallery(string name, string city, string manager)
+        {
+            // Arrange
+            var artGalleryId = Guid.NewGuid();
+            var artGallery = new ArtGallery(name, city, manager);
+            var mockArtGalleryRepository = new Mock<IArtGalleryRepository>(MockBehavior.Strict);
+            mockArtGalleryRepository.Setup(m => m.UpdateAsync(It.IsAny<ArtGallery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(artGallery);
+
+            var updateArtGalleryCommand = new UpdateArtGalleryCommand(artGalleryId, new CreateArtGalleryRequest(name, city, manager));
+            var updateArtGalleryCommandHandler = new UpdateArtGalleryCommandHandler(mockArtGalleryRepository.Object);
+
+            // Act
+            var result = await updateArtGalleryCommandHandler.Handle(updateArtGalleryCommand, CancellationToken.None);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Name, Is.EqualTo(name));
+            Assert.That(result.City, Is.EqualTo(city));
+            Assert.That(result.Manager, Is.EqualTo(manager));
+        }
+
+        [Test]
+        public async Task Test_Deletes_an_existing_art_work()
+        {
+            // Arrange
+            var artWorkId = Guid.NewGuid();
+            var mockArtWorkRepository = new Mock<IArtWorkRepository>(MockBehavior.Strict);
+            mockArtWorkRepository.Setup(m => m.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var deleteArtWorkCommand = new DeleteArtWorkCommand(artWorkId);
+            var deleteArtWorkCommandHandler = new DeleteArtWorkCommandHandler(mockArtWorkRepository.Object);
+
+            // Act
+            var result = await deleteArtWorkCommandHandler.Handle(deleteArtWorkCommand, CancellationToken.None);
+
+            // Assert
+            Assert.That(result, Is.True);
+        }
 
         private void SetupGalleriesAndWorks()
         {
@@ -89,6 +164,32 @@ namespace VAArGalleryWebAPITest
 
             return mock;
         }
+
+        private Mock<IArtGalleryRepository> CreateArtGalleryRepositoryMock()
+        {
+            var mock = new Mock<IArtGalleryRepository>(MockBehavior.Strict);
+            mock.Setup(m => m.CreateAsync(It.IsAny<ArtGallery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ArtGallery("Gallery Three", "Coimbra", "Cristina Cunha"));
+
+            return mock;
+        }
+
+        private Mock<IArtWorkRepository> CreateArtWorkRepositoryMock()
+        {
+            var mock = new Mock<IArtWorkRepository>(MockBehavior.Strict);
+            mock.Setup(m => m.CreateAsync(It.IsAny<Guid>(), It.IsAny<ArtWork>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ArtWork("obra 6", "artista 5", 1950, 20000));
+
+            return mock;
+        }
+
+        private Mock<IArtGalleryRepository> UpdateArtGalleryRepositoryMock()
+        {
+            var mock = new Mock<IArtGalleryRepository>(MockBehavior.Strict);
+            mock.Setup(m => m.UpdateAsync(It.IsAny<ArtGallery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ArtGallery("Gallery Three", "Coimbra", "Cristina Cunha"));
+
+            return mock;
+        }
+
+        
 
     }
 }

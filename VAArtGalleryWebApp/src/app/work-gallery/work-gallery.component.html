@@ -1,0 +1,104 @@
+<h1>Obras de Arte</h1>
+
+<div style="min-width: 600px">
+  <div>
+    <form class="example-form" [formGroup]="formArtWork">
+      <div>
+        <mat-form-field class="field-full-width">
+          <mat-label>Nome</mat-label>
+          <input
+            type="name"
+            matInput
+            formControlName="name"
+            placeholder="Nome"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="field-full-width">
+          <mat-label>Autor</mat-label>
+          <input
+            type="author"
+            matInput
+            formControlName="author"
+            placeholder="Autor"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="field-full-width">
+          <mat-label>Ano de Criação</mat-label>
+          <input
+            type="number"
+            matInput
+            formControlName="creationYear"
+            placeholder="Ano de Criação"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="field-full-width">
+          <mat-label>Preço</mat-label>
+          <input
+            type="price"
+            matInput
+            formControlName="askPrice"
+            placeholder="Preço"
+          />
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-raised-button color="primary" (click)="addArtWork()" [disabled]="!formArtWork.valid">
+          Adicionar obra
+        </button>
+      </div>
+    </form>
+  </div>
+  <div style="margin-top: 25px">
+    <table mat-table [dataSource]="listArtWorks">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nome</th>
+        <td mat-cell *matCellDef="let art">{{ art.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="author">
+        <th mat-header-cell *matHeaderCellDef>Autor</th>
+        <td mat-cell *matCellDef="let art">{{ art.author }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="creationYear">
+        <th mat-header-cell *matHeaderCellDef>Ano Criação</th>
+        <td mat-cell *matCellDef="let art">{{ art.creationYear }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="askPrice">
+        <th mat-header-cell *matHeaderCellDef>Preço</th>
+        <td mat-cell *matCellDef="let art">
+          {{ art.askPrice | number : "1.3-3" }} EUR
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns"
+        class="header-blue"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="mat-row"
+      ></tr>
+    </table>
+
+    <div style="margin-top: 20px">
+      <button
+        mat-raised-button
+        style="float: right"
+        color="primary"
+        (click)="backGalleries()"
+      >
+        Voltar para galeria
+      </button>
+    </div>
+  </div>
+</div>

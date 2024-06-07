@@ -5,3 +5,20 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: burlywood;
 }
+
+.header-blue {
+  background-color: blue !important;
+  color: white !important;
+  /* Opcional: para garantir que o texto seja legível */
+}
+
+.mat-row:nth-child(even) {
+  background-color: #f2f2f2;
+  /* Cinza claro */
+}
+
+.mat-row:nth-child(odd) {
+  background-color: #d9d9d9;
+  /* Cinza escuro */
+}
+
