@@ -8,6 +8,7 @@ namespace VAArtGalleryWebAPI.Infrastructure
         {
             string repositoryPath = configuration["RepositoryPath"] ?? throw new Exception("Undefined repository path");
 
+
             services.AddSingleton<IArtGalleryRepository>(new ArtGalleryRepository(repositoryPath));
             services.AddSingleton<IArtWorkRepository>(new ArtWorkRepository(repositoryPath));
             return services;
