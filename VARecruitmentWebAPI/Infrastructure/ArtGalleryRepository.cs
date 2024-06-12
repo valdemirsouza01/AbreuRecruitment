@@ -25,7 +25,19 @@ namespace VAArtGalleryWebAPI.Infrastructure
             cancellationToken.ThrowIfCancellationRequested();
 
             var galleries = await GetAllArtGalleriesAsync(cancellationToken);
+
             return galleries.Find(g => g.Id == id);
+        }
+
+        public async Task<List<ArtGallery>> GetArtGalleryByCityAsync(string city, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var galleries = await GetAllArtGalleriesAsync(cancellationToken);
+
+            var galleriesByCity = galleries.Where(c => c.City == city).ToList();
+
+            return galleriesByCity;
         }
 
         public async Task<ArtGallery> CreateAsync(ArtGallery artGallery, CancellationToken cancellationToken = default)

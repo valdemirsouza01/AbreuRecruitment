@@ -6,6 +6,7 @@ namespace VAArtGalleryWebAPI.Domain.Interfaces
     {
         Task<List<ArtGallery>> GetAllArtGalleriesAsync(CancellationToken cancellationToken = default);
         Task<ArtGallery?> GetArtGalleryByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<List<ArtGallery>> GetArtGalleryByCityAsync(string city, CancellationToken cancellationToken = default);
         Task<ArtGallery> CreateAsync(ArtGallery artGallery, CancellationToken cancellationToken = default);
         Task<ArtGallery> UpdateAsync(ArtGallery artGallery, CancellationToken cancellationToken = default);
     }

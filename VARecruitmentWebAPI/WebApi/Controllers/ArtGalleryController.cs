@@ -20,6 +20,18 @@ namespace VAArtGalleryWebAPI.WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet("city")]
+        public async Task<ActionResult<List<GetAllArtGalleriesResult>>> GetAllGalleriesByCity([FromQuery] string city)
+        {
+            var galleriesByCity = await mediator.Send(new GetAllArtGalleriesByCityQuery(city));
+
+            var result = galleriesByCity.Select(g => new GetAllArtGalleriesResult(g.Id, g.Name, g.City, g.Manager, g.ArtWorksOnDisplay?.Count ?? 0)).ToList();
+
+            return Ok(result);
+
+        }
+
+
         [HttpPost]
         public async Task<ActionResult<CreateArtGalleryResult>> Create([FromBody] CreateArtGalleryRequest request)
         {
